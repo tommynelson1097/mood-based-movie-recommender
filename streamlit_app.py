@@ -21,7 +21,7 @@ with st.form("movie_form"):
 if submitted:
     with st.spinner("Fetching movies and generating recommendations..."):
         try:
-            movies = fetch_movies_from_tmdb(mood, decade, min_rating, country)
+            movies = fetch_movies_from_tmdb(mood, decade, min_rating, country, st_debug=st)
             if not movies:
                 st.warning("No movies found for your criteria. Try adjusting your filters.")
             else:

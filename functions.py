@@ -26,7 +26,7 @@ def get_tmdb_key():
     except (ImportError, KeyError, AttributeError):
         return os.getenv("TMDB_API_KEY")    
 
-# fo local runs 
+# for local runs
 # openai_key = os.getenv("OPENAI_API_KEY")
 # tmdb_api_key = os.getenv("TMDB_API_KEY")
 
@@ -58,7 +58,8 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country):
     start_date = f'{decade}-01-01'
     end_date = f'{decade+9}-12-31'
     # Use Streamlit secrets if available, else fallback to environment variable
-    api_key = get_tmdb_key()
+    api_key = get_tmdb_key() 
+    # api_key = tmdb_api_key # local 
     url = "https://api.themoviedb.org/3/discover/movie"
     params = {
         "api_key": api_key,
@@ -78,6 +79,7 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country):
 def generate_movie_recommendations(mood, movies, n=3):
     """Use OpenAI GPT to recommend and describe n movies for the given mood, showing TMDB rating next to each film name. Requires OPENAI_API_KEY in .env."""
     openai_api_key = get_openai_key()
+    # openai_api_key = openai_key #local
     if not openai_api_key:
         raise ValueError('OpenAI API key not found. Please add OPENAI_API_KEY to your .env file or Streamlit secrets.')
     client = OpenAI(api_key=openai_api_key)
