@@ -2,10 +2,13 @@
 """
 Core logic for Mood-Based Movie Recommender (TMDB + OpenAI)
 """
-import os
+
 import requests
 import openai
-from dotenv import load_dotenv
+try:
+    import streamlit as st
+except ImportError:
+    st = None
 
 # Map moods to TMDB genre IDs
 mood_to_genre = {
@@ -31,8 +34,12 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country):
     genre_str = ','.join(genres)
     start_date = f'{decade}-01-01'
     end_date = f'{decade+9}-12-31'
-    load_dotenv()
-    api_key = os.getenv('TMDB_API_KEY')
+    # Use Streamlit secrets if available, else fallback to environment variable
+    if st is not None and hasattr(st, "secrets") and "TMDB_API_KEY" in st.secrets:
+        api_key = st.secrets["TMDB_API_KEY"]
+    else:
+        import os
+        api_key = os.getenv('TMDB_API_KEY')
     url = "https://api.themoviedb.org/3/discover/movie"
     params = {
         "api_key": api_key,
@@ -50,8 +57,14 @@ def generate_movie_recommendations(mood, movies, n=3):
     """Use OpenAI GPT to recommend and describe n movies for the given mood, showing TMDB rating next to each film name."""
     load_dotenv()
     openai_api_key = os.getenv('OPENAI_API_KEY')
+    # Use Streamlit secrets if available, else fallback to environment variable
+    if st is not None and hasattr(st, "secrets") and "OPENAI_API_KEY" in st.secrets:
+        openai_api_key = st.secrets["OPENAI_API_KEY"]
+    else:
+        import os
+        openai_api_key = os.getenv('OPENAI_API_KEY')
     if not openai_api_key:
-        raise ValueError('OpenAI API key not found. Please add OPENAI_API_KEY to your .env file.')
+        raise ValueError('OpenAI API key not found. Please add OPENAI_API_KEY to Streamlit secrets or your .env file.')
     openai.api_key = openai_api_key
     movie_list = '\n'.join([
         f"- {m['title']} (TMDB rating: {m.get('vote_average', 'N/A')}): {m.get('overview', 'No description available.')}" 
