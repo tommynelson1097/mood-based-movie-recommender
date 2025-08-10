@@ -1,8 +1,6 @@
 """
 Core logic for Mood-Based Movie Recommender x(TMDB + OpenAI)
 """
-
-
 import requests
 from openai import OpenAI
 import os
