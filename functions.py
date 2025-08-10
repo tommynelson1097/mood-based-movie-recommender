@@ -64,6 +64,12 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country):
         "region": country.upper(),
     }
     response = requests.get(url, params=params)
+
+    # Debug: print API key and full response for troubleshooting
+    print("TMDB API Key:", api_key)
+    print("TMDB URL:", response.url)
+    print("TMDB Response:", response.json())
+    
     return response.json().get("results", [])
 
 def generate_movie_recommendations(mood, movies, n=3):
