@@ -1,14 +1,22 @@
-# mood_recommender_core.py
 """
 Core logic for Mood-Based Movie Recommender (TMDB + OpenAI)
 """
 
+
 import requests
 import openai
-try:
-    import streamlit as st
-except ImportError:
-    st = None
+import os
+from dotenv import load_dotenv
+import streamlit as st
+
+
+
+# Load environment variables from .env file at import time
+load_dotenv()
+
+# Example: Load API keys from environment variables (ensure these are set in your .env file)
+openai_key = os.getenv("OPENAI_API_KEY")
+tmdb_api_key = os.getenv("TMDB_API_KEY")
 
 # Map moods to TMDB genre IDs
 mood_to_genre = {
@@ -29,17 +37,13 @@ def get_genres_for_mood(mood):
     return mood_to_genre.get(mood.lower(), ['18'])  # Default to Drama if not found
 
 def fetch_movies_from_tmdb(mood, decade, min_rating, country):
-    """Fetch movies from TMDB based on mood, decade, minimum rating, and country of origin."""
+    """Fetch movies from TMDB based on mood, decade, minimum rating, and country of origin. Requires TMDB_API_KEY in .env."""
     genres = get_genres_for_mood(mood)
     genre_str = ','.join(genres)
     start_date = f'{decade}-01-01'
     end_date = f'{decade+9}-12-31'
     # Use Streamlit secrets if available, else fallback to environment variable
-    if st is not None and hasattr(st, "secrets") and "TMDB_API_KEY" in st.secrets:
-        api_key = st.secrets["TMDB_API_KEY"]
-    else:
-        import os
-        api_key = os.getenv('TMDB_API_KEY')
+    api_key = tmdb_api_key
     url = "https://api.themoviedb.org/3/discover/movie"
     params = {
         "api_key": api_key,
@@ -54,18 +58,10 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country):
     return response.json().get("results", [])
 
 def generate_movie_recommendations(mood, movies, n=3):
-    """Use OpenAI GPT to recommend and describe n movies for the given mood, showing TMDB rating next to each film name."""
-    load_dotenv()
-    openai_api_key = os.getenv('OPENAI_API_KEY')
-    # Use Streamlit secrets if available, else fallback to environment variable
-    if st is not None and hasattr(st, "secrets") and "OPENAI_API_KEY" in st.secrets:
-        openai_api_key = st.secrets["OPENAI_API_KEY"]
-    else:
-        import os
-        openai_api_key = os.getenv('OPENAI_API_KEY')
-    if not openai_api_key:
-        raise ValueError('OpenAI API key not found. Please add OPENAI_API_KEY to Streamlit secrets or your .env file.')
-    openai.api_key = openai_api_key
+    """Use OpenAI GPT to recommend and describe n movies for the given mood, showing TMDB rating next to each film name. Requires OPENAI_API_KEY in .env."""
+    if not openai_key:
+        raise ValueError('OpenAI API key not found. Please add OPENAI_API_KEY to your .env file.')
+    openai.api_key = openai_key
     movie_list = '\n'.join([
         f"- {m['title']} (TMDB rating: {m.get('vote_average', 'N/A')}): {m.get('overview', 'No description available.')}" 
         for m in movies[:10]
