@@ -65,8 +65,7 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country):
     }
     response = requests.get(url, params=params)
 
-    # Debug: print API key and full response for troubleshooting
-    print("TMDB API Key:", api_key)
+    # Debug: print full response for troubleshooting
     print("TMDB URL:", response.url)
     print("TMDB Response:", response.json())
     
