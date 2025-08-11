@@ -1,6 +1,6 @@
 # Main Streamlit Cloud App
 
-Access the live app here: https://mood-based-movie-recommender-m729rjtzx7ggucxidsycfz.streamlit.app/
+Access the live app here: [https://mood-based-movie-recommender-m729rjtzx7ggucxidsycfz.streamlit.app/](https://nyc-rat-hotspot-classifier-vqryxjsymsbqunmkvaseje.streamlit.app/)
 
 # Mood-Based Movie Recommender
 
