@@ -14,7 +14,6 @@ with st.form("movie_form"):
     mood = st.selectbox("How are you feeling?", mood_options, index=0)
     decade = st.selectbox("Choose a decade:", [1980, 1990, 2000, 2010, 2020], index=2)
     min_rating = st.slider("Minimum TMDB rating:", 0.0, 10.0, 7.0, 0.1)
-    country = st.text_input("Country (2-letter code, e.g., US, GB, IN):", value="US")
     n = st.slider("How many recommendations?", 1, 10, 3)
     submitted = st.form_submit_button("Get Recommendations!")
 
@@ -22,7 +21,7 @@ if submitted:
     with st.spinner("Fetching movies and generating recommendations..."):
         try:
             # Pass st_debug=st to show TMDB API debug output in the UI
-            movies = fetch_movies_from_tmdb(mood, decade, min_rating, country, st_debug=st)
+            movies = fetch_movies_from_tmdb(mood, decade, min_rating)
             if not movies:
                 st.warning("No movies found for your criteria. Try adjusting your filters.")
             else:

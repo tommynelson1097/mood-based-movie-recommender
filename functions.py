@@ -47,11 +47,9 @@ def get_genres_for_mood(mood):
     """Return a list of genre IDs for a given mood."""
     return mood_to_genre.get(mood.lower(), ['18'])  # Default to Drama if not found
 
-## Fetch movies from TMDB based on mood, decade, minimum rating, and country of origin.
-## Requires TMDB_API_KEY in .env or Streamlit secrets.
-def fetch_movies_from_tmdb(mood, decade, min_rating, country, st_debug=None):
-    """Fetch movies from TMDB based on mood, decade, minimum rating, and country of origin. Requires TMDB_API_KEY in .env or Streamlit secrets.
-    If st_debug is provided, writes debug info to Streamlit UI."""
+## Fetch movies from TMDB based on mood, decade, minimum rating.
+def fetch_movies_from_tmdb(mood, decade, min_rating):
+    """Fetch movies from TMDB based on mood, decade, minimum rating. Requires TMDB_API_KEY in .env or Streamlit secrets."""
     genres = get_genres_for_mood(mood)
     genre_str = ','.join(genres)
     start_date = f'{decade}-01-01'
@@ -66,13 +64,9 @@ def fetch_movies_from_tmdb(mood, decade, min_rating, country, st_debug=None):
         "sort_by": "popularity.desc",
         "primary_release_date.gte": start_date,
         "primary_release_date.lte": end_date,
-        "vote_average.gte": min_rating,
-        "region": country.upper(),
+        "vote_average.gte": min_rating
     }
     response = requests.get(url, params=params)
-    debug_msg = f"TMDB URL: {response.url}\nTMDB Response: {response.json()}"
-    if st_debug is not None:
-        st_debug.write(debug_msg)
     return response.json().get("results", [])
 
 ## Use OpenAI GPT to recommend and describe n movies for the given mood, showing TMDB rating next to each film name.
