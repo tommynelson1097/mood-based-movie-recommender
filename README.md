@@ -1,10 +1,13 @@
+# Main Streamlit Cloud App
+
+Access the live app here: https://mood-based-movie-recommender-m729rjtzx7ggucxidsycfz.streamlit.app/
 
 # Mood-Based Movie Recommender
 
 This project is a web application that recommends movies based on your current mood, using The Movie Database (TMDB) API and OpenAI's GPT model. The app is built with Streamlit for an interactive user experience.
 
 ## Features
-- Select your mood, preferred decade, minimum TMDB rating, and country of origin
+- Select your mood, preferred decade, minimum TMDB rating.
 - Fetches relevant movies from TMDB
 - Uses OpenAI GPT to generate friendly, mood-matched movie recommendations with descriptions
 - Secure API key management using a `.env` file (for local use) or Streamlit Cloud secrets (for cloud deployment)
